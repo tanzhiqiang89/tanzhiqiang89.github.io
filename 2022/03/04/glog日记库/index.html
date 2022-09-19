@@ -1,0 +1,1086 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tanunat.png">
+  <link rel="icon" href="/img/tanunat.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Tanunat">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="glog为google开源库用于实现应用层日志记录，提供了基于C++ Stream流及各种帮助宏定义的日志记录接口，提供到控制台、文件的日志记录功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="glog日记库">
+<meta property="og:url" content="https://tanunatblog.kooldns.cn/2022/03/04/glog%E6%97%A5%E8%AE%B0%E5%BA%93/index.html">
+<meta property="og:site_name" content="Tanunat&#39;s Blog">
+<meta property="og:description" content="glog为google开源库用于实现应用层日志记录，提供了基于C++ Stream流及各种帮助宏定义的日志记录接口，提供到控制台、文件的日志记录功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tanunat-1313845263.cos.ap-guangzhou.myqcloud.com/pic/Glog-logo-new.gif">
+<meta property="article:published_time" content="2022-03-04T15:15:24.000Z">
+<meta property="article:modified_time" content="2022-09-10T07:02:19.140Z">
+<meta property="article:author" content="Tanunat">
+<meta property="article:tag" content="技能">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tanunat-1313845263.cos.ap-guangzhou.myqcloud.com/pic/Glog-logo-new.gif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>glog日记库 - Tanunat&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.15.6/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tanunatblog.kooldns.cn","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tanunat&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/photo/">
+                
+                photo
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://tanunat-1313845263.cos.ap-guangzhou.myqcloud.com/pic/Glog-logo-new.gif') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.2)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="glog日记库"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Tanunat
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-03-04 23:15" pubdate>
+          2022年3月4日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          22k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          184 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">glog日记库</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p><a target="_blank" rel="noopener" href="http://www.manongjc.com/detail/12-qeilyiqogzhifld.html">http://www.manongjc.com/detail/12-qeilyiqogzhifld.html</a></p>
+</blockquote>
+<h2 id="glog教程"><a class="markdownIt-Anchor" href="#glog教程">#</a> glog 教程</h2>
+<h3 id="安装glog"><a class="markdownIt-Anchor" href="#安装glog">#</a> 安装 glog</h3>
+<p>由于 cmake 版本问题，不能使用最新版本的 glog 库，我们退而求其次，低版本的 glog，具体版本，可去到库 https://github.com/google/glog 里的分支 -&gt;Tags 查看。</p>
+<blockquote>
+<p>本人使用 ubuntu18 安装过 ros，自带安装了 cmake3.10，如强行升级 cmake 版本会把 ros 环境弄乱</p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># clone该项目</span><br>git <span class="hljs-built_in">clone</span> https://github.com/google/glog.git <br><span class="hljs-comment"># 切换到需要的版本 </span><br><span class="hljs-built_in">cd</span> glog<br>git checkout v0.4.0  <span class="hljs-comment">#切换到v0.4.0，最新版本需要使用cmake版本过高，如果升级cmake版本会把ros环境弄乱</span><br><br><span class="hljs-comment"># 根据官网的指南进行安装</span><br>cmake -H. -Bbuild -G <span class="hljs-string">&quot;Unix Makefiles&quot;</span><br>cmake --build build<br>sudo cmake --build build --target install  <span class="hljs-comment">#由于copy权限问题，前面需要加sudo</span><br></code></pre></td></tr></table></figure>
+<h3 id="glog使用"><a class="markdownIt-Anchor" href="#glog使用">#</a> glog 使用</h3>
+<p>假设项目 tree 如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">- myprj<br> - test.cpp<br> - CMakeList.txt<br></code></pre></td></tr></table></figure>
+<p><code>test.cpp</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cstdio&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-comment">//引用第三方库</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;glog/logging.h&quot;</span></span><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span> </span>&#123;<br>  google::<span class="hljs-built_in">InitGoogleLogging</span>(argv[<span class="hljs-number">0</span>]);    <span class="hljs-comment">// 初始化</span><br>  <span class="hljs-type">double</span> input, result;<br>  <span class="hljs-built_in">LOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;测试glog&quot;</span>;  <br>  std::cout &lt;&lt; <span class="hljs-string">&quot;测试glog成功&quot;</span> &lt;&lt; std::endl;<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>CMakeList.txt</code></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span> (VERSION <span class="hljs-number">2.8</span>)<br><span class="hljs-keyword">project</span>(myprj)<br><br><span class="hljs-keyword">add_executable</span>(<span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.cpp)<br><span class="hljs-keyword">find_package</span>(GLOG)<br><span class="hljs-keyword">if</span>(GLOG_FOUND)<br>    <span class="hljs-comment"># 由于glog在连接时将头文件直接链接到了库里面，所以这里不用显示调用target_include_directories</span><br>    <span class="hljs-keyword">target_link_libraries</span>(<span class="hljs-keyword">test</span> glog::glog)<br><span class="hljs-keyword">else</span>(GLOG_FOUND)<br>    <span class="hljs-keyword">message</span>(FATAL_ERROR <span class="hljs-string">&quot;glog library not found&quot;</span>)<br><span class="hljs-keyword">endif</span>(GLOG_FOUND)<br></code></pre></td></tr></table></figure>
+<p>编译项目</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> build <span class="hljs-comment">#如果存在build目录则无需创建</span><br><span class="hljs-built_in">cd</span> build<br>cmake ..<br>make<br></code></pre></td></tr></table></figure>
+<p>编译后执行程序，默认情况下 <code>LOG(INFO)</code>  会把日记信息输出到 /tmp 目录下，可以在 /tmp 下找到一个 test.INFO 的文件。</p>
+<h3 id="关于glog"><a class="markdownIt-Anchor" href="#关于glog">#</a> 关于 glog</h3>
+<p>glog 定义了一系列宏来简化许多常见的日志记录任务。您可以按严重级别记录消息、从命令行控制日志记录行为、基于条件进行日志记录、在不满足预期条件时中止程序、引入您自己的详细日志记录级别、自定义附加到日志消息的前缀等等。</p>
+<h3 id="简介"><a class="markdownIt-Anchor" href="#简介">#</a> 简介</h3>
+<p>google 出的一个 C++ 轻量级日志库，支持以下功能：</p>
+<ul>
+<li>参数设置，以命令行参数的方式设置标志参数来控制日志记录行为；</li>
+<li>严重性分级，根据日志严重性分级记录日志；</li>
+<li>可有条件地记录日志信息；</li>
+<li>条件中止程序。丰富的条件判定宏，可预设程序终止条件；</li>
+<li>异常信号处理。程序异常情况，可自定义异常处理过程；</li>
+<li>支持 debug 功能；</li>
+<li>自定义日志信息；</li>
+<li>线程安全日志记录方式；</li>
+<li>系统级日志记录；</li>
+<li>google perror 风格日志信息；</li>
+<li>精简日志字符串信息</li>
+</ul>
+<h3 id="功能说明"><a class="markdownIt-Anchor" href="#功能说明">#</a> 功能说明</h3>
+<h5 id="1参数设置"><a class="markdownIt-Anchor" href="#1参数设置">#</a> 1. 参数设置</h5>
+<p>可通过命令行方式设置 glog 的标志参数，用来控制日志记录行为。</p>
+<p>命令格式为：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">标志名<span class="hljs-attribute">1</span>=标志值 标志名<span class="hljs-attribute">2</span>=标志值 …… 标志值<span class="hljs-attribute">n</span>=标志值 ./程序名<br></code></pre></td></tr></table></figure>
+<p>所有标志名需添加统一前缀 —“<strong>GLOG_</strong>”，不同标志语句之间以空格相隔</p>
+<p>例如：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">--GLOG_vmodule=mapreduce=2,file=1,gfs*=3  --GLOG_v=0 ./application.exe<br></code></pre></td></tr></table></figure>
+<p>常用标志参数类型及其作用说明：</p>
+<table>
+<thead>
+<tr>
+<th>标志参数</th>
+<th>类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logtostderr</td>
+<td>bool</td>
+<td>值为 true 的时候，日志信息输出到 stderr，并非文件。默认值为 false。</td>
+</tr>
+<tr>
+<td>stderrthreshold</td>
+<td>int</td>
+<td>严重性级别在该门限值以上的日志信息除了写入日志文件以外，还要输出到 stderr。各严重性级别对应的数值：INFO—0，WARNING—1，ERROR—2，FATAL—3 默认值为 2。</td>
+</tr>
+<tr>
+<td>minloglevel</td>
+<td>int</td>
+<td>严重性级别在该门限值以上的日志信息才进行记录。</td>
+</tr>
+<tr>
+<td>log_dir</td>
+<td>string</td>
+<td>日志信息记录路径。默认为空，如果没有指定信息输出到 stderr，则信息保存在 <code>&quot;/tmp/&lt;program name&gt;.&lt;hostname&gt;.&lt;user name&gt;.log.&lt;severity level&gt;.&lt;date&gt;.&lt;time&gt;.&lt;pid&gt;&quot;</code>  文件中。 (e.g.,  <code>&quot;/tmp/hello_world.example.com.hamaji.log.INFO.20080709-222411.10474&quot;</code> ).</td>
+</tr>
+<tr>
+<td>v</td>
+<td>int</td>
+<td>对于使用 “VLOG (m)”（m 为 int 型）表达式进行输出的日志信息，只在 m 的值小于该标志的值的时候，才进行输出。另外， 该设置可能被 vmodule 标志给覆盖。默认为 0</td>
+</tr>
+<tr>
+<td>vmodule</td>
+<td>string</td>
+<td>分模块 (文件) 设置 VLOG (m) 日志信息的输出基本。命令格式为以逗号分开的 <code>“&lt;module name&gt;=&lt;log level&gt;”</code>  表达式组成。其中 <code>&lt;module name&gt;</code>  是 <code>“glob pattern”</code> ，支持通配符， <code>&lt;module name&gt;</code>  不包括文件的扩展名（.h,.cc 等）。</td>
+</tr>
+</tbody>
+</table>
+<p><a target="_blank" rel="noopener" href="http://xn--logging-tb4k24b89n32glmlwqo7nogou30fpteqp0g1tzf.cc">还有其他的标志参数定义在 logging.cc</a>，可在文件中搜索 “DEFINE_” 来进行查看。</p>
+<h5 id="2严重性分级记录信息"><a class="markdownIt-Anchor" href="#2严重性分级记录信息">#</a> 2. 严重性分级记录信息</h5>
+<p>glog 可通过根据指定的严重性等级，来选择性记录日志。日志信息严重性等级按由低到高排列依次为： <code>INFO</code> ,  <code>WARNING</code> ,  <code>ERROR</code> , 和  <code>FATAL</code>  四级。使用者可以在命令行中设置严重性等级门限值来控制日志的输出，详细见 “参数设置” 部分的 “ <code>minloglevel</code> ” 标志值的介绍。</p>
+<h5 id="3有条件地记录日志信息"><a class="markdownIt-Anchor" href="#3有条件地记录日志信息">#</a> 3. 有条件地记录日志信息</h5>
+<p>glog 可以控制日志信息在指定条件下进行记录。如使用 <code>LOG_IF</code> ， <code>LOG_EVERY_N</code> ， <code>LOG_IF_EVERY_N</code> ， <code>LOG_FIRST_N</code>  等</p>
+<h5 id="4有条件地中止程序"><a class="markdownIt-Anchor" href="#4有条件地中止程序">#</a> 4. 有条件地中止程序</h5>
+<p>glog 提供了 <code>CHECK</code>  宏，用于在调试地时候中止程序，及早发现程序错误。当通过该宏指定的条件不成立的时候，程序会中止，并且记录对应的日志信息。功能类似于 <code>ASSERT</code> ，区别是 <code>CHECK</code>  宏不受 <code>NDEBUG</code>  约束，在 release 版中同样有效。具体使用如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK</span>(fp-&gt;<span class="hljs-built_in">Write</span>(x) == <span class="hljs-number">4</span>) &lt;&lt; <span class="hljs-string">&quot;Write failed!&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>当 fp-&gt;Write (x) == 4 成立时，记录 “Write failed!” 日志信息，并且中止程序，其中 fp-&gt;Write (x) == 4 为判定条件，日志信息以 c++ 的 stream 操作形式生成。</p>
+<p>glog 提供了多个便利的宏来处理特定关系的判定。具体有：</p>
+<ol>
+<li>
+<p>判定大小关系</p>
+<p><code>CHECK_EQ</code> ,  <code>CHECK_NE</code> ,  <code>CHECK_LE</code> ,  <code>CHECK_LT</code> ,  <code>CHECK_GE</code> ,  <code>CHECK_GT</code> ，使用这些宏需要注意类型一致，如果出现类型不一致的，可使用 static_cast 转换。</p>
+</li>
+<li>
+<p>判定指针是否为空</p>
+<p><code>CHECK_NOTNULL(some_ptr)</code> ，可用于对象初始化的时候。</p>
+</li>
+<li>
+<p>判定字符串是否相等</p>
+<p><code>CHECK_STREQ</code> ,  <code>CHECK_STRNE</code> ,  <code>CHECK_STRCASEEQ</code> ,  <code>CHECK_STRCASENE</code> 。可进行大小写敏感或不敏感字符串来分别判定。</p>
+</li>
+<li>
+<p>判定浮点是否相等或相近</p>
+<p><code>CHECK_DOUBLE_EQ</code> ， <code>CHECK_NEAR</code> 。这两个宏都需要指定一个可容忍的偏差上限。</p>
+<p>当这些宏判定条件不成立时，glog 会生成一个 FATAL 级别的日志信息，该信息包含比较的两个值和 stream 方式传入的字符串，然后中止程序。</p>
+</li>
+</ol>
+<h5 id="5异常信号处理"><a class="markdownIt-Anchor" href="#5异常信号处理">#</a> 5. 异常信号处理</h5>
+<p>glog 提供了比较方便的程序异常处理机制。例如，当程序出现 <code>SIGSEGV</code>  异常信号时，glog 的默认异常处理过程会导出非常有用的异常信息。异常处理过程可以通过 <code>google::InstallFailureSignalHandler()</code>  来自定义。下面为异常处理过程的输出例子：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sh">*** Aborted at 1225095260 (unix time) try <span class="hljs-string">&quot;date -d @1225095260&quot;</span> <span class="hljs-keyword">if</span> you are using GNU <span class="hljs-built_in">date</span> ***<br>*** SIGSEGV (@0x0) received by PID 17711 (TID 0x7f893090a6f0) from PID 0; stack trace: ***<br><br>PC: @           0x412eb1 TestWaitingLogSink::send()<br><br>    @     0x7f892fb417d0 (unknown)<br>    @     0x412eb1 TestWaitingLogSink::send()<br>    @     0x7f89304f7f06 google::LogMessage::SendToLog()<br><br>    @     0x7f89304f35af google::LogMessage::Flush()<br>    @     0x7f89304f3739 google::LogMessage::~LogMessage()<br><br>    @     0x408cf4 TestLogSinkWaitTillSent()<br>    @     0x4115de main<br>    @     0x7f892f7ef1c4 (unknown)<br>    @     0x4046f9 (unknown)<br></code></pre></td></tr></table></figure>
+<p>默认 + 情况下，异常信息是输出到 stderr，通过 InstallFailureWriter（）可以改变输出目标。</p>
+<h5 id="6支持debug功能"><a class="markdownIt-Anchor" href="#6支持debug功能">#</a> 6. 支持 debug 功能</h5>
+<p>glog 提供特定的宏只在 debug 模式下生效。以下分别对应 LOG、LOG_IF、DLOG_EVERY_N 操作的专用宏。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">DLOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;Found cookies&quot;</span>;<br><span class="hljs-built_in">DLOG_IF</span>(INFO, num_cookies &gt; <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;Got lots of cookies&quot;</span>; <br><span class="hljs-built_in">DLOG_EVERY_N</span>(INFO, <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;Got the &quot;</span> &lt;&lt; COUNTER &lt;&lt; <span class="hljs-string">&quot;th cookie&quot;</span>;<br></code></pre></td></tr></table></figure>
+<h5 id="7自定义日志信息"><a class="markdownIt-Anchor" href="#7自定义日志信息">#</a> 7. 自定义日志信息</h5>
+<p>glog 提供 VLOG 宏，让用户自定义分级信息，该分级与 LOG 宏对应的严重性分级是独立管理，在命令行参数设置中独立设置 “v” 或 “vmodule” 参数来控制，具体见 “参数设置” 部分标志说明。VLOG 宏便于用户调试、查找完问题以后，屏蔽日志信息，减轻负担。具体使用如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">VLOG_IF</span>(<span class="hljs-number">1</span>, (size &gt; <span class="hljs-number">1024</span>))&lt;&lt; <span class="hljs-string">&quot;I&#x27;m printed when size is more than 1024 and when you run the &quot;</span><span class="hljs-string">&quot;program with --v=1 or more&quot;</span>;  <span class="hljs-comment">//只有在size&gt;1024成立时且命令行参数v的值不小于1，才记录日志信息。</span><br><br><span class="hljs-built_in">VLOG_EVERY_N</span>(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>)&lt;&lt; <span class="hljs-string">&quot;I&#x27;m printed every 10th occurrence, and when you run the program &quot;</span><span class="hljs-string">&quot;with --v=1 or more. Present occurence is &quot;</span> &lt;&lt; COUNTER;  <span class="hljs-comment">//只有在命令行参数v的值不小于1时，才会每执行10次记录一次日志信息。</span><br><br><span class="hljs-built_in">VLOG_IF_EVERY_N</span>(<span class="hljs-number">1</span>, (size &gt; <span class="hljs-number">1024</span>), <span class="hljs-number">10</span>)&lt;&lt; <span class="hljs-string">&quot;I&#x27;m printed on every 10th occurence of case when size is more &quot;</span><span class="hljs-string">&quot; than 1024, when you run the program with --v=1 or more. &quot;</span>; <span class="hljs-string">&quot;Present occurence is &quot;</span> &lt;&lt; COUNTER;   <span class="hljs-comment">//只有在命令行参数v的值不小于1时，若size&gt;1024条件连续成立10次，记录一次日志信息。</span><br></code></pre></td></tr></table></figure>
+<h5 id="8线程安全日志记录"><a class="markdownIt-Anchor" href="#8线程安全日志记录">#</a> 8. 线程安全日志记录</h5>
+<p>glog 提供了线程安全的日志记录方式。在 &lt;glog/raw_logging.h&gt; 文件中提供了相关的宏，如，RAW_CHECK，RAW_LOG 等。这些宏的功能与 CHECK，LOG 等一致，除此以外支持线程安全，不需要为其分配任何内存和提供额外的锁（lock）机制。</p>
+<h5 id="9系统级日志记录"><a class="markdownIt-Anchor" href="#9系统级日志记录">#</a> 9. 系统级日志记录</h5>
+<p>glog 除了提供了普通的日志记录宏，还提供 <code>SYSLOG</code> ,  <code>SYSLOG_IF</code> , 和  <code>SYSLOG_EVERY_N</code>  宏，这些宏将日志信息通过 <code>syslog()</code>  函数记录到系统日志。</p>
+<h5 id="10google-perror风格日志信息"><a class="markdownIt-Anchor" href="#10google-perror风格日志信息">#</a> 10.google perror 风格日志信息</h5>
+<p>glog 提供了与 LOG * 和 CHECK 宏作用等价的 PLOG ()、PLOG_IF () 和 PCHECK () 宏，不同的是，后者在记录日志信息的时候，会将 errno 的状态及其描述附加到日志描述中，如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">PCHECK</span>(<span class="hljs-built_in">write</span>(<span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">2</span>) &gt;= <span class="hljs-number">0</span>) &lt;&lt; <span class="hljs-string">&quot;Write NULL failed&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>当条件不成立时，会输出日记消息：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">F0825</span> <span class="hljs-number">185142</span> test.cc:<span class="hljs-number">22</span>] Check failed: write(<span class="hljs-number">1</span>, NULL, <span class="hljs-number">2</span>) &gt;= <span class="hljs-number">0</span> Write NULL failed: Bad address<span class="hljs-meta"> [14]</span><br></code></pre></td></tr></table></figure>
+<h5 id="11精简日志字符串信息"><a class="markdownIt-Anchor" href="#11精简日志字符串信息">#</a> 11. 精简日志字符串信息</h5>
+<p>日志信息的字符串会占用比较大的内存空间，另外还带来隐私泄露的问题。glog 提供了 GOOGLE_STRIP_LOG 宏在编译时候去除日志的字符串信息。</p>
+<h3 id="日记级别"><a class="markdownIt-Anchor" href="#日记级别">#</a> 日记级别</h3>
+<p>使用日志必须了解日志级别的概念，说白了就是将日志信息按照严重程度进行分类，glog 提供四种日志级别：INFO, WARNING, ERROR, FATAL。它们对应的日志级别整数分别为 0、1、2、3， 每个级别的日志对应一个日志文件，其中高级别的日志也会出现在低级别的日志文件中，也就是说 FATAL 日志会出现在 INFO、WARNING、ERROR 对应的日志文件中。FATAL 日志会终止程序，没事别乱用。</p>
+<h3 id="日记文件"><a class="markdownIt-Anchor" href="#日记文件">#</a> 日记文件</h3>
+<p>glog 的日志文件默认是保存在 /tmp 目录下的，当然你可以指定日志路路径和日志名称，如下，指定日志文件名字：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">google::<span class="hljs-built_in">InitGoogleLogging</span>(argv[<span class="hljs-number">0</span>])<br></code></pre></td></tr></table></figure>
+<p>你也可以指定其它字符串，比如本例指定的名字为 test，<a target="_blank" rel="noopener" href="http://xn--test-uj5f39ao23dpvgoxn20anx0560b.INFO">那么日志文件就是 test.INFO</a>, test.WARNING 这样的格式</p>
+<h3 id="日记配置"><a class="markdownIt-Anchor" href="#日记配置">#</a> 日记配置</h3>
+<p>默认情况下，glog 会将日志输出到 /tmp 目录下，日志文件命名格式为：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pf"><span class="hljs-variable">&lt;program name&gt;</span>.<span class="hljs-variable">&lt;hostname&gt;</span>.<span class="hljs-variable">&lt;user name&gt;</span>.<span class="hljs-keyword">log</span>.<span class="hljs-variable">&lt;severity level&gt;</span>.<span class="hljs-variable">&lt;date&gt;</span>.<span class="hljs-variable">&lt;time&gt;</span>.<span class="hljs-variable">&lt;pid&gt;</span><br></code></pre></td></tr></table></figure>
+<p>如本人生成的日记如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">test<span class="hljs-selector-class">.ubuntu</span><span class="hljs-selector-class">.tanunat</span><span class="hljs-selector-class">.log</span><span class="hljs-selector-class">.INFO</span>.<span class="hljs-number">20220420</span>-<span class="hljs-number">105526.13220</span><br></code></pre></td></tr></table></figure>
+<p>那么要怎样改变日志的目录呢？可以通过命令行 flag log_dir 指定日志目录，例如：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./test --log_dir=.    <span class="hljs-comment"># 将日志输出到当前目录</span><br></code></pre></td></tr></table></figure>
+<p>glog 还支持其它的命令行 flag：</p>
+<ul>
+<li><code>logtostderr</code>  将日志输出到 stderr，不输出到日志文件，默认值是 false。</li>
+<li><code>minloglevel</code>  如果程序输出的日志的级别大于或等于这个值，那么日志就会被记录下来，它的默认值是 0，代表 <code>INFO</code>  (1 代表 <code>WARNING</code> ，2 代表 <code>ERROR</code> ，而 3 代表 <code>FATAL</code> )。</li>
+</ul>
+<h3 id="指定参数"><a class="markdownIt-Anchor" href="#指定参数">#</a> 指定参数</h3>
+<blockquote>
+<p>结合 “功能说明”–“参数设置” 来食用</p>
+</blockquote>
+<p>glog 可以采用命令行的模式配置参数，这也是它灵活易用的体现，有两种指定参数的方法，一种依赖于 gflag 如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./your_application --logtostderr=1<br></code></pre></td></tr></table></figure>
+<p>或者通过环境变量指定：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">GLOG_logtostderr=1 ./your_application<br></code></pre></td></tr></table></figure>
+<p>所有的环境变量均以 GLOG_开头，我们推荐使用第二种，一来不必依赖于 gflag，二来当参数很多时，可以写成脚本的形式，看起来更直观，GLOG 支持的 flag 如下（只列出常用的，如果想看全部的，可以在源码的 logging.cc 文件下看到）:</p>
+<p><strong>GLOG_logtostderr</strong><br>
+bool，默认为 FALSE，将日志打印到标准错误，而不是日志文件<br>
+<strong> GLOG_alsologtostderr</strong><br>
+bool，默认为 FALSE，将日志打印到日志文件，同时也打印到标准错误<br>
+<strong> GLOG_stderrthreshold</strong><br>
+int，默认为 2（ERROR），大于等于这个级别的日志才打印到标准错误，当指定这个参数时，GLOG_alsologtostderr 参数将会失效<br>
+<strong> GLOG_minloglevel</strong><br>
+int，默认为 0（INFO）， 小于这个日志级别的将不会打印<br>
+<strong> GLOG_log_dir</strong><br>
+string 类型，指定日志输出目录，目录必须存在<br>
+<strong> GLOG_max_log_size</strong><br>
+int，指定日志文件最大 size，超过会被切割，单位为 MB<br>
+<strong>GLOG_stop_logging_if_full_disk</strong><br>
+bool，默认为 FALSE，当磁盘满了之后不再打印日志<br>
+<strong> GLOG_v</strong><br>
+int，默认为 0，指定 GLOG_v=n 时，对 vlog (m)，当 m&lt;=n 时才会打印日志</p>
+<p>知道了这些参数之后，我们可以在脚本中指定这些变量，还是以 test 程序为例，test.sh 如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-meta">#!/bin/sh</span><br><span class="hljs-built_in">export</span> GLOG_log_dir=<span class="hljs-built_in">log</span><br><span class="hljs-built_in">export</span> GLOG_minloglevel=1<br><span class="hljs-built_in">export</span> GLOG_stderrthreshold=1<br><span class="hljs-built_in">export</span> GLOG_v=3<br><span class="hljs-built_in">export</span> GLOG_max_log_size=1<br>./test<br></code></pre></td></tr></table></figure>
+<p>执行脚本 sh test.sh 即可。这样看上去就非常清晰，修改起来也方便。</p>
+<h3 id="日记类型"><a class="markdownIt-Anchor" href="#日记类型">#</a> 日记类型</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++">LOG      <span class="hljs-comment">//内置日志</span><br>VLOG     <span class="hljs-comment">//自定义日志</span><br>DLOG     <span class="hljs-comment">//DEBUG模式可输出的日志</span><br>DVLOG    <span class="hljs-comment">//DEBUG模式可输出的自定义日志</span><br>SYSLOG   <span class="hljs-comment">//系统日志，同时通过 syslog() 函数写入到 /var/log/message 文件</span><br>PLOG     <span class="hljs-comment">//perror风格日志，设置errno状态并输出到日志中</span><br>RAW_LOG  <span class="hljs-comment">//线程安全的日志，需要#include &lt;glog/raw_logging.h&gt;</span><br></code></pre></td></tr></table></figure>
+<p>前六种的日志使用方法完全相同（包括条件日志输出），而 RAW_LOG 使用方法比较特殊，且不支持条件日志输出，另外不接受  colorlogtostderr 的颜色设置。自定义日志也不接受 colorlogtostderr 的颜色设置，另外其日志严重级别也为自定义数字，且与默认日志严重级别相反，数字越小严重级别越高。</p>
+<h3 id="打印日记"><a class="markdownIt-Anchor" href="#打印日记">#</a> 打印日记</h3>
+<h5 id="普通模式"><a class="markdownIt-Anchor" href="#普通模式">#</a> 普通模式</h5>
+<ul>
+<li>简单的输出日志</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">LOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;message&quot;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>按<strong>条件</strong>输出日志</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">LOG_IF</span>(INFO, a &gt; <span class="hljs-number">0</span>) &lt;&lt; <span class="hljs-string">&quot;message&quot;</span>; <span class="hljs-comment">//当a&gt;0时候，才记录log</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>间隔</strong>记录输出</li>
+</ul>
+<p>有时候不需要频繁重复地输出消息，可以间隔输出，下面命令间隔 10 次方输出消息，即在 1st，11st，21st 次的输出消息。其中 <code>google::COUNTER</code>  用于重复内容计数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">LOG_EVERY_N</span>(INFO, <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;Got the &quot;</span> &lt;&lt; google::COUNTER &lt;&lt; <span class="hljs-string">&quot;th cookie&quot;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>组合<strong>条件和间隔</strong>记录输出</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">LOG_IF_EVERY_N</span>(INFO, (size &gt; <span class="hljs-number">1024</span>), <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;Got the &quot;</span> &lt;&lt; google::COUNTER<br>                                        &lt;&lt; <span class="hljs-string">&quot;th big cookie&quot;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>输出前 n 次内容</li>
+</ul>
+<p>如下，输出前 20 次内容，同样 <code>google::COUNTER</code>  用于重复内容计数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">LOG_FIRST_N</span>(INFO, <span class="hljs-number">20</span>) &lt;&lt; <span class="hljs-string">&quot;Got the &quot;</span> &lt;&lt; google::COUNTER &lt;&lt; <span class="hljs-string">&quot;th cookie&quot;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>按时间间隔记录</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">LOG_EVERY_T</span>(INFO, <span class="hljs-number">0.01</span>) &lt;&lt; <span class="hljs-string">&quot;Got a cookie&quot;</span>;  <span class="hljs-comment">//10ms输出一次</span><br><span class="hljs-built_in">LOG_EVERY_T</span>(INFO, <span class="hljs-number">2.35</span>) &lt;&lt; <span class="hljs-string">&quot;Got a cookie&quot;</span>;  <span class="hljs-comment">//2.35s输出一次</span><br></code></pre></td></tr></table></figure>
+<h5 id="debug模式"><a class="markdownIt-Anchor" href="#debug模式">#</a> debug 模式</h5>
+<p>“debug mode” 日志宏只会在调试模式下才能生效，非调试模式下就没有任何日志输出。使用这些宏可以避免由于过度的日志输出导致的程序性能下降。</p>
+<p>debug 模式的语句如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">DLOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;Found cookies&quot;</span>;<br><span class="hljs-built_in">DLOG_IF</span>(INFO, num_cookies &gt; <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;Got lots of cookies&quot;</span>;<br><span class="hljs-built_in">DLOG_EVERY_N</span>(INFO, <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;Got the &quot;</span> &lt;&lt; google::COUNTER &lt;&lt; <span class="hljs-string">&quot;th cookie&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>当编译的时候指定 - D NDEBUG 时，debug 日志不会被输出，比如使用 g++ 编译 test.cpp，编译命令改为：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">g++ test.cpp -o <span class="hljs-built_in">test</span> -L/usr/local/lib -lglog -I/usr/local/include/glog -D NDEBUG<br></code></pre></td></tr></table></figure>
+<p>那么就不会有 debug 日志输出。</p>
+<p>如使用 cmake 编译，只需要在 CMakeList.txt 前面添加下面指令进行模式控制：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">set</span>(CMAKE_BUILD_TYPE <span class="hljs-string">&quot;Debug&quot;</span>)  <span class="hljs-comment">#编译模式：Debug/Release</span><br></code></pre></td></tr></table></figure>
+<h5 id="check模式"><a class="markdownIt-Anchor" href="#check模式">#</a> check 模式</h5>
+<p>在程序中检查我们的期望条件是一个很好的做法，这样能够让我们尽早发现程序中的错误。而 CHECK 宏提供了在条件不满足时终止程序的能力，就像标准 C 库中的 assert 宏一样。当某个条件不为 true 时，CHECK 宏会终止程序运行。但是它不像 assert 宏，它不受非 debug 模式的控制，所以不管在何种模式下都会有效果。因此，在下面这个例子中，fp-&gt;Write (x) 是一直有效的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK</span>(fp-&gt;<span class="hljs-built_in">Write</span>(x) == <span class="hljs-number">4</span>) &lt;&lt; <span class="hljs-string">&quot;Write failed!&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>除了上面说的 check 宏，还有一些用于检查等于 / 不等于的宏   <code>CHECK_EQ</code> ,  <code>CHECK_NE</code> ,  <code>CHECK_LE</code> ,  <code>CHECK_LT</code> ,  <code>CHECK_GE</code> , 及 <code>CHECK_GT</code> 。这些宏都是比较两个参数值的，当结果不满足预想条件时将会记录一条 FATAL 错误日志，同时会将两个比较变量的值也记录在日志中，但是前提是两个比较变量值类型必须支持操作符 <code>&lt;&lt;</code> 。</p>
+<ul>
+<li>CHECK，检查某个条件是否成立</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK</span>(a &gt; <span class="hljs-number">0</span>) &lt;&lt; <span class="hljs-string">&quot;message&quot;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>CHECK_EQ，检测两个值是否相等</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK_EQ</span>(a, b) &lt;&lt; <span class="hljs-string">&quot;message&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>eg1: 我们非常小心谨慎去确保每个参数都被检查一次，因此所有能够作为函数的合法参数对象在这里都是合法的。特别是，参数可能是临时变量参数表达式。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK_EQ</span>(<span class="hljs-built_in">string</span>(<span class="hljs-string">&quot;abc&quot;</span>)[<span class="hljs-number">1</span>], ’b’);<br></code></pre></td></tr></table></figure>
+<p>eg2: 如果其中一个参数是指针，而另外一个却是 NULL 的话，编译器会报告一个错误。为了能够正常工作，可以简单地调用 static_cast 将 NULL 转换为对应类型指针。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK_EQ</span>(some_ptr, <span class="hljs-built_in">static_cast</span>&lt;SomeType*&gt;(<span class="hljs-literal">NULL</span>));<br></code></pre></td></tr></table></figure>
+<ul>
+<li>检查两个值是否不相等</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK_NE</span>(a, b) &lt;&lt; <span class="hljs-string">&quot;message&quot;</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>CHECK_LE</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><br></code></pre></td></tr></table></figure>
+<ul>
+<li>CHECK_LT</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><br></code></pre></td></tr></table></figure>
+<ul>
+<li>CHECK_GE</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><br></code></pre></td></tr></table></figure>
+<ul>
+<li>CHECK_GT</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><br></code></pre></td></tr></table></figure>
+<ul>
+<li>CHECK_NOTNULL，检测是否为空指针，将返回该指针</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK_NOTNULL</span>(some_ptr);<br>some_ptr-&gt;<span class="hljs-built_in">DoSomething</span>();<br></code></pre></td></tr></table></figure>
+<p>由于该宏返回的是一个已存在的指针，所以这个宏在构造函数初始化列表中非常有用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">S</span> &#123;<br> <span class="hljs-built_in">S</span>(Something* ptr) : <span class="hljs-built_in">ptr_</span>(<span class="hljs-built_in">CHECK_NOTNULL</span>(ptr)) &#123;&#125;   <span class="hljs-comment">//</span><br> Something* ptr_;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>但是要注意的是，你不能使用该宏来作为 C++ 流。请使用上面描述的 CHECK_EQ 宏来在终止程序前进行日志记录。</p>
+<p>如果你正在比较 string 值，那么这里也有一系列的宏可以使用 - CHECK_STREQ, CHECK_STRNE, CHECK_STRCASEEQ, and CHECK_STRCASENE. 而 CASE 版本是区分大小写的，你可以非常放心地将 NULL 指针传递给这些宏，他们会将 NULL 和非 NULL 字符串判断为不相等的，而两个 NULL 就判断为相等。</p>
+<p>注意，两个参数都可能是一个由函数返回的临时字符串</p>
+<ul>
+<li>CHECK_DOUBLE_EQ，用来检查两个浮点数值是否相等，并且允许两个值有很小的误差。CHECK_NEAR 却能接收第三个浮点数，同时也是允许存在一个小的误差值。</li>
+</ul>
+<h5 id="自定义日记级别"><a class="markdownIt-Anchor" href="#自定义日记级别">#</a> 自定义日记级别</h5>
+<p>当你在跟踪调试一个很复杂的 bug，那么详细的日志信息是很有帮助的。但是你可能又想在非开发环境下避免输出这些太详细的日志。对于详细日志，glog 提供了 VLOG 宏，这个宏允许你自定义自己的日志等级。使用命令行参数–v 可以控制输出哪些详细日志。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">VLOG</span>(<span class="hljs-number">1</span>) &lt;&lt; <span class="hljs-string">&quot;vlog1: hello world!&quot;</span>;<br><span class="hljs-built_in">VLOG</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-string">&quot;vlog2: hello world!&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>在使用 VLOG 的时候，我们定义详细日志等级越低，那么将会有更多的可能信息将会被输出到日志文件中。例如，如果我们调用 VLOG 的时候设置–v==1，那么 VLOG (1) 将会记录日志，但是 VLOG (2) 将不会被记录日志。这个和严重等级刚好是相反的。</p>
+<p>每一个模块都能通过命令行控制详细日志的输出：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">--vmodule=mapreduce=2,file=1,gfs*=3 --v=0 ./application.exe<br></code></pre></td></tr></table></figure>
+<p>以上命令行参数指定了一系列的输出等级：</p>
+<ul>
+<li><code>mapreduce</code>  模块中的 VLOG (2) 或者更低级别日志将会被输出</li>
+<li><code>file</code>  中的 VLOG (1) 或者更低级别的日志将会被输出</li>
+<li>前缀为 <code>gfs</code>  的文件中 VLOG (3) 或者更低级别的日志将会被输出</li>
+<li>其他情况下的 VLOG (0) 或更低级别日志将会被输出</li>
+</ul>
+<p>里也有基于条件的宏 VLOG_IS_ON (n)，当参数–v 参数值等于或者大于 n 时，该宏将会返回 true 值。例如下面使用方式：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">if</span> (<span class="hljs-built_in">VLOG_IS_ON</span>(<span class="hljs-number">2</span>)) &#123;<br> <span class="hljs-comment">// do some logging preparation and logging</span><br> <span class="hljs-comment">// that can&#x27;t be accomplished with just VLOG(2) &lt;&lt; ...;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>详细级别的条件宏 VLOG_IF, VLOG_EVERY_N 和 VLOG_IF_EVERY_N，他们的功能表现类似于 LOG_IF, LOG_EVERY_N 和 LOF_IF_EVERY，但是他们接受一个数字型的详细等级而不是严重等级。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">VLOG_IF</span>(<span class="hljs-number">1</span>, (size &gt; <span class="hljs-number">1024</span>)) &lt;&lt; <span class="hljs-string">&quot;I&#x27;m printed when size is more than 1024 and when you run the &quot;</span> <span class="hljs-string">&quot;program with --v=1 or more&quot;</span>;<br><span class="hljs-built_in">VLOG_EVERY_N</span>(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;I&#x27;m printed every 10th occurrence, and when you run the program &quot;</span> <span class="hljs-string">&quot;with --v=1 or more. Present occurence is &quot;</span> &lt;&lt; google::COUNTER;<br><span class="hljs-built_in">VLOG_IF_EVERY_N</span>(<span class="hljs-number">1</span>, (size &gt; <span class="hljs-number">1024</span>), <span class="hljs-number">10</span>) &lt;&lt; <span class="hljs-string">&quot;I&#x27;m printed on every 10th occurence of case when size is more &quot;</span> <span class="hljs-string">&quot; than 1024, when you run the program with --v=1 or more. &quot;</span> <span class="hljs-string">&quot;Present occurence is &quot;</span> &lt;&lt; google::COUNTER;<br></code></pre></td></tr></table></figure>
+<h3 id="其他功能"><a class="markdownIt-Anchor" href="#其他功能">#</a> 其他功能</h3>
+<h4 id="失败消息处理"><a class="markdownIt-Anchor" href="#失败消息处理">#</a> 失败消息处理</h4>
+<p>该库提供了一个方便的程序异常信号处理器，就是当程序出现异常信号（例如 SIGSEGV）出现时，该库会将有用程序的有用信息都转储出来。该信号处理器可以通过 google::InstallFailureSignalHandler () 进行安装。下面代码就是该异常信号处理器的输出内容例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">*** Aborted at <span class="hljs-number">1225095260</span> (unix time) <span class="hljs-keyword">try</span> <span class="hljs-string">&quot;date -d @1225095260&quot;</span> <span class="hljs-keyword">if</span> you are using GNU date ***<br>*** SIGSEGV (@<span class="hljs-number">0x0</span>) received by PID <span class="hljs-number">17711</span> (TID <span class="hljs-number">0x7f893090a6f0</span>) <span class="hljs-keyword">from</span> PID <span class="hljs-number">0</span>; stack trace: ***<br>PC: @           <span class="hljs-number">0x412eb1</span> TestWaitingLogSink::send()<br><span class="hljs-meta">@     <span class="hljs-number">0x7f892fb417d0</span> (<span class="hljs-params">unknown</span>)</span><br><span class="hljs-meta">@           <span class="hljs-number">0x412eb1</span> TestWaitingLogSink::send()</span><br><span class="hljs-meta">@     <span class="hljs-number">0x7f89304f7f06</span> google::LogMessage::SendToLog()</span><br><span class="hljs-meta">@     <span class="hljs-number">0x7f89304f35af</span> google::LogMessage::Flush()</span><br><span class="hljs-meta">@     <span class="hljs-number">0x7f89304f3739</span> google::LogMessage::~LogMessage()</span><br><span class="hljs-meta">@           <span class="hljs-number">0x408cf4</span> TestLogSinkWaitTillSent()</span><br><span class="hljs-meta">@           <span class="hljs-number">0x4115de</span> main</span><br><span class="hljs-meta">@     <span class="hljs-number">0x7f892f7ef1c4</span> (<span class="hljs-params">unknown</span>)</span><br><span class="hljs-meta">@           <span class="hljs-number">0x4046f9</span> (<span class="hljs-params">unknown</span>)</span><br></code></pre></td></tr></table></figure>
+<h4 id="消息功能"><a class="markdownIt-Anchor" href="#消息功能">#</a> 消息功能</h4>
+<p>glog 中提供的条件日志宏在使用过程中需要小心，因为当条件 false 的时候，右边表达式并不会被执行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">CHECK</span>(obj.ok) &lt;&lt; obj.<span class="hljs-built_in">CreatePrettyFormattedStringButVerySlow</span>();<br></code></pre></td></tr></table></figure>
+<h4 id="自定义失败处理函数"><a class="markdownIt-Anchor" href="#自定义失败处理函数">#</a> 自定义失败处理函数</h4>
+<p>FATAL 严重级别日志和未满足条件的 CHECK 宏都会终止你的程序，但是你可以通过 InstallFailureFunction 函数来修改终止的行为。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">YourFailureFunction</span><span class="hljs-params">()</span> </span>&#123;<br> <span class="hljs-comment">// Reports something...</span><br> <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>* argv[])</span> </span>&#123;<br>  <span class="hljs-comment">//...</span><br> google::<span class="hljs-built_in">InstallFailureFunction</span>(&amp;YourFailureFunction);<br> <span class="hljs-comment">//...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>默认情况下，glog 会尝试将堆栈信息都转存出来，并设置程序退出码为 1. 当然，这个堆栈跟踪的前提是你的程序支持才行。</p>
+<h4 id="原始日记"><a class="markdownIt-Anchor" href="#原始日记">#</a> 原始日记</h4>
+<p>文件中定义了线程安全的日志操作，这些操作不会申请任何的内存或获取任何的锁。因此，在这个头文件中定义的这些宏能够用于低级别的内存申请和同步代码。具体请查看 <code>src/glog/raw_logging.h</code>  中的代码。</p>
+<h4 id="google风格的perror"><a class="markdownIt-Anchor" href="#google风格的perror">#</a> google 风格的 perror ()</h4>
+<p><code>PLOG()</code> 、 <code>PLOG_IF()</code>  和 <code>PCHECK()</code>  的表现与 <code>LOG*</code> 、 <code>CHECK</code>  非常相似。例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">PCHECK</span>(<span class="hljs-built_in">write</span>(<span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">2</span>) &gt;= <span class="hljs-number">0</span>) &lt;&lt; <span class="hljs-string">&quot;Write NULL failed&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>条件检查失败的日志输出如下格式：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">F0825</span> <span class="hljs-number">185142</span> test.cc:<span class="hljs-number">22</span>] Check failed: write(<span class="hljs-number">1</span>, NULL, <span class="hljs-number">2</span>) &gt;= <span class="hljs-number">0</span> Write NULL failed: Bad address<span class="hljs-meta"> [14]</span><br></code></pre></td></tr></table></figure>
+<h4 id="syslog"><a class="markdownIt-Anchor" href="#syslog">#</a> syslog</h4>
+<p><code>SYSLOG</code> ,  <code>SYSLOG_IF</code>  和 <code>SYSLOG_EVERY_N</code>  这几个宏都是可以使用的，而这些 <code>syslog</code>  日志是对普通日志的一个增加。但是要注意， <code>syslog</code>  系列日志操作会对性能有较大影响，特别是当 <code>syslog</code>  用于远程记录日志时。在你使用这些宏之前，确保你已经明确了解了这些宏的含义。一般来说，谨慎使用这些宏是明智的选择。</p>
+<h4 id="windows用户须知"><a class="markdownIt-Anchor" href="#windows用户须知">#</a> windows 用户须知</h4>
+<p>google 的 glog 定义了一个严重级别 <code>ERROR</code> ，这个级别宏同时也在 windows.h 文件中定义了。你在通过在包含 <code>glog/logging.h</code>  之前定义宏 <code>GLOG_NO_ABBREVIATED_SEVERITIES</code> ，这样就能使得 glog 不去定义 <code>INFO</code> ,  <code>WARNING</code> ,  <code>ERROR</code>  和 <code>FATAL</code>  这几个宏了。就算使用了这个宏，你还是可以想日志工具一样使用 iostream。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> GLOG_NO_ABBREVIATED_SEVERITIES</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;glog/logging.h&gt;</span></span><br><br><span class="hljs-comment">// ...</span><br><br><span class="hljs-built_in">LOG</span>(ERROR) &lt;&lt; <span class="hljs-string">&quot;This should work&quot;</span>;<br><span class="hljs-built_in">LOG_IF</span>(ERROR, x &gt; y) &lt;&lt; <span class="hljs-string">&quot;This should be also OK&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>但是，在使用 glog/logging.h 中定义的函数的时候，你再也不能使用这个宏（INFO, WARNING, ERROR,FATAL）了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> GLOG_NO_ABBREVIATED_SEVERITIES</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;windows.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;glog/logging.h&gt;</span></span><br><br><span class="hljs-comment">// ...</span><br><br><span class="hljs-comment">// This won&#x27;t work.</span><br><span class="hljs-comment">// google::FlushLogFiles(google::ERROR);</span><br><br><span class="hljs-comment">// Use this instead.</span><br>google::<span class="hljs-built_in">FlushLogFiles</span>(google::GLOG_ERROR);<br></code></pre></td></tr></table></figure>
+<h3 id="其他glog-apis"><a class="markdownIt-Anchor" href="#其他glog-apis">#</a> 其他 glog APIs：</h3>
+<table>
+<thead>
+<tr>
+<th>api</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>void google::InitGoogleLogging(const char* argv0)</code></td>
+<td>初始化 glog 库，参数是第一个命令行参数即程序名</td>
+</tr>
+<tr>
+<td><code>void google::ShutdownGoogleLogging()</code></td>
+<td>关闭 glog 库</td>
+</tr>
+<tr>
+<td><code>void google::FlushLogFiles(LoSeverity min_severity)</code></td>
+<td>[Thread-safe] 指定级别以上的全部日志消息都当即写入到日志文件中</td>
+</tr>
+<tr>
+<td><code>void google::FlushLogFilesUnsafe(LogSeverity min_severity)</code></td>
+<td>非线程安全的输出指定级别以上的日志消息，用于灾难性程序问题时输出必要的日志消息</td>
+</tr>
+<tr>
+<td><code>void google::SetLogDestination(LogSeverity severity,const char* base_filename)</code></td>
+<td>[Thread-safe] 设置指定级别的日志输出的日志文件，若是 base_filename 为 &quot;&quot; 则表示该级别日志不输出</td>
+</tr>
+<tr>
+<td><code>void google::SetLogSymlink(LogSeverity severity,const char* symlink_basename)</code></td>
+<td>[Thread-safe] 设置置顶级别的日志文件的软链接，symlik_basename 为空表示不设置软链接，若是不调用该函数，系统默认链接名称是程序名</td>
+</tr>
+<tr>
+<td><code>void google::AddLogSink(LogSink *destination)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>void google::RemoveLogSink(LogSink *destination)</code></td>
+<td>[Thread-safe] 添加和删除日志输出渠道</td>
+</tr>
+<tr>
+<td><code>void google::SetLogFilenameExtension(const char* filename_extension)</code></td>
+<td>[Thread-safe] 为全部日志文件添加文件扩展名，特别用于 SetLogDestination () 设置的日志文件。一般作法是将监听的端口号做为日志文件扩展名。</td>
+</tr>
+<tr>
+<td><code>void google::SetStderrLogging(LogSeverity min_severity)</code></td>
+<td>[Thread-safe] 肯定除了输出到日志文件同时还输出到 STDERR 的日志最小级别</td>
+</tr>
+<tr>
+<td><code>void google::LogToStderr()</code></td>
+<td>[Thread-safe] 设置只只将日志输出到 STDERR 而不输出到日志文件</td>
+</tr>
+<tr>
+<td><code>void google::SetEmailLogging(LogSeverity min_severity,const char* address)</code></td>
+<td>[Thread-safe] 设置发送邮件的日志最小级别</td>
+</tr>
+<tr>
+<td><code>bool google::SendEmail(const char dest,const char subject,const char *body)</code></td>
+<td>[Thread-safe] 发送邮件</td>
+</tr>
+<tr>
+<td><code>const std::vector &amp; google::GetLoggingDirectories()</code></td>
+<td>获取日志输出目录集合</td>
+</tr>
+<tr>
+<td><code>void google::InstallFailureSignalHandler()</code></td>
+<td>信号处理函数，处理的主要信号有 SIGSEGV/SIGILL/SIGFPE/SIGBRT/SIGBUS/SIGTERM</td>
+</tr>
+<tr>
+<td><code>void google::InstallFailureWriter(void (writer)(const char data,int size))</code></td>
+<td>设置系统崩溃时的输出函数，data 数据不必定是以’\0’结尾</td>
+</tr>
+<tr>
+<td><code>void google::InstallFailureFunction(void (*fail_func)())</code></td>
+<td>设置 LOG (FATAL) 在输出日志消息后调用的函数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="eg1"><a class="markdownIt-Anchor" href="#eg1">#</a> eg1:</h4>
+<p><code>CMakeLists.txt</code></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cmake"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">2.8</span>)<br><span class="hljs-keyword">project</span>(glog_test)<br><br><span class="hljs-keyword">set</span>(CMAKE_CXX_STANDARD <span class="hljs-number">14</span>)<br><span class="hljs-keyword">set</span>(CMAKE_MODULE_PATH <span class="hljs-variable">$&#123;CMAKE_MODULE_PATH&#125;</span> <span class="hljs-string">&quot;$&#123;PROJECT_SOURCE_DIR&#125;/cmake&quot;</span>)<br><br><span class="hljs-keyword">find_package</span>(Glog REQUIRED)<br><br><span class="hljs-keyword">add_executable</span>(glog_test main.cpp)<br><span class="hljs-keyword">target_link_libraries</span> (glog_test glog)<br></code></pre></td></tr></table></figure>
+<p><code>glog_test.cpp</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> GOOGLE_STRIP_LOG 3    <span class="hljs-comment">// 小于此级别的日志语句将在编译时清除，以减小编译后的文件大小，必须放在 #include 前面才有效。</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;glog/logging.h&gt;</span>  <span class="hljs-comment">//记得添加头文件</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>** argv)</span> </span>&#123;<br>    google::<span class="hljs-built_in">InitGoogleLogging</span>(<span class="hljs-string">&quot;glog test&quot;</span>);<br>    google::<span class="hljs-built_in">SetLogFilenameExtension</span>(<span class="hljs-string">&quot;testLog_&quot;</span>);<br>    <br>    <span class="hljs-comment">//会输出&quot;导致程序结束的信号&quot;,和google::InstallFailureWriter(&amp;FatalMessageDump); 配合使用，可以在程序出现严重错误时将详细的错误信息打印出来</span><br>    <span class="hljs-comment">//google::InstallFailureSignalHandler(); //注册一下即可。默认是打印到stderr中，可以通过InstallFailureWriter更改输出目标。</span><br>    <span class="hljs-comment">// google::InstallFailureWriter(&amp;FatalMessageDump);</span><br><br>    <span class="hljs-comment">//日记文件输出位置</span><br>    string log_home = <span class="hljs-string">&quot;./log/&quot;</span>;<br>    string info_log = log_home + <span class="hljs-string">&quot;info/&quot;</span>;<br>    string warning_log = log_home + <span class="hljs-string">&quot;warn/&quot;</span>;<br>    string error_log = log_home + <span class="hljs-string">&quot;error/&quot;</span>;<br>    string fatal_log = log_home + <span class="hljs-string">&quot;fatal/&quot;</span>;<br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::INFO, info_log.<span class="hljs-built_in">c_str</span>()); <span class="hljs-comment">// 把日志同时记录到文件</span><br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::WARNING, warning_log.<span class="hljs-built_in">c_str</span>());<br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::ERROR, error_log.<span class="hljs-built_in">c_str</span>());<br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::FATAL, fatal_log.<span class="hljs-built_in">c_str</span>());<br>    <span class="hljs-comment">//FLAGS_log_dir = &quot;./logs&quot;;  //或使用此种方式设置日记文件输出位置</span><br><br>    <span class="hljs-comment">// 通过GFLAGS来设置参数，更多选项可以在logging.cc里面查询</span><br>    <span class="hljs-comment">// 日志等级分为INFO, WARNING, ERROR, FATAL,如果是FATAL级别这直接运行报错</span><br>    FLAGS_stderrthreshold = google::INFO;    <span class="hljs-comment">//输出到控制台，INFO, WARNING, ERROR都输出，若为google::WARNING，则只输出WARNING, ERROR</span><br>    <span class="hljs-comment">//google::SetStderrLogging(google::GLOG_INFO);  //也可以</span><br>    <span class="hljs-comment">//FLAGS_logtostderr = 1;  //也可以使用此方法控制输出到控制台，当为0时，只输出error及更高等级的日记</span><br>    <span class="hljs-comment">//FLAGS_alsologtostderr = false; //日志记录到文件的同时输出到strerr</span><br>    <span class="hljs-comment">//FLAGS_v = std::atoi(argv[1]); //设置最大显示等级(超过该等级将不记录log)</span><br><br>    FLAGS_colorlogtostderr = <span class="hljs-literal">true</span>;  <span class="hljs-comment">//控制控制台输出log的彩色</span><br>    <span class="hljs-comment">//FLAGS_logbufsecs = 0;  // Set log output speed(s)</span><br>    <span class="hljs-comment">//FLAGS_max_log_size = 1024;  // 最大日志大小（MB）, 如果设置为0将默认为1</span><br>    <span class="hljs-comment">//FLAGS_stop_logging_if_full_disk = true;  // If disk is full</span><br><br>    <span class="hljs-comment">//基本用法：INFO，WAINING，ERROR</span><br>    <span class="hljs-built_in">LOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;Hello GLOG&quot;</span>;                <span class="hljs-comment">//</span><br>    <span class="hljs-built_in">LOG</span>(WARNING) &lt;&lt; <span class="hljs-string">&quot;warning test&quot;</span>;    <span class="hljs-comment">// 会输出一个Warning日志</span><br>    <span class="hljs-built_in">LOG</span>(ERROR) &lt;&lt; <span class="hljs-string">&quot;error test&quot;</span>;        <span class="hljs-comment">// 会输出一个Error日志</span><br>    <span class="hljs-comment">// LOG(FATAL) &lt;&lt; &quot;fatal&quot;;   // Logging a FATAL message terminates the program (after the message is logged)! 程序允许到这将中止</span><br><br>    <span class="hljs-comment">// 类似assert的功能</span><br>    <span class="hljs-comment">// CHECK(access(argv[2], 0) != -1) &lt;&lt; &quot;No such file: &quot;&lt;&lt;argv[2];</span><br><br>    <span class="hljs-comment">//常见用法1：如果满足一定条件，输出错误log，退出程序</span><br>    <span class="hljs-keyword">if</span>(<span class="hljs-number">1</span>)&#123;<br>        <span class="hljs-built_in">LOG</span>(ERROR) &lt;&lt; <span class="hljs-string">&quot;No image files for detection&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-comment">//常见用法2：glog提供VLOG宏来提供自定义打印等级的功能.Verbose</span><br>    <span class="hljs-comment">//可以通过命令行&quot;GLOG_v=n ./可执行程序&quot;,（例如GLOG_v=2 ./test）来控制VLOG的输出,VLOG(x),x&lt;=n的情况,VLOG会输出,否则不输出.v默认为0,所以默认情况下VLOG(-1),VLOG(0)能够输出.</span><br>    <span class="hljs-comment">//通常把调试的LOG设为1,这样在默认情况下不输出</span><br>    <span class="hljs-built_in">VLOG</span>(<span class="hljs-number">-1</span>) &lt;&lt; <span class="hljs-string">&quot;VLOG(-1) message.&quot;</span>;<br>    <span class="hljs-built_in">VLOG</span>(<span class="hljs-number">0</span>) &lt;&lt; <span class="hljs-string">&quot;VLOG(0) message.&quot;</span>;<br>    <span class="hljs-built_in">VLOG</span>(<span class="hljs-number">1</span>) &lt;&lt; <span class="hljs-string">&quot;VLOG(1) message.&quot;</span>;<br>    <span class="hljs-built_in">VLOG</span>(<span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-string">&quot;VLOG(2) message.&quot;</span>;<br>    <span class="hljs-built_in">VLOG</span>(<span class="hljs-number">3</span>) &lt;&lt; <span class="hljs-string">&quot;VLOG(3) message.&quot;</span>;<br><br>    <span class="hljs-comment">//常见用法3：</span><br>    <span class="hljs-comment">// 如果工程为Debug模式,下面信息会输出,如果是release模式,下面信息不会输出.</span><br>    <span class="hljs-built_in">DLOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;DLOG:Debug Mode Message!&quot;</span>;<br><br>    <span class="hljs-comment">//不常见用法4：条件输出</span><br>    <span class="hljs-built_in">LOG_IF</span>(INFO, <span class="hljs-number">89</span> &gt; <span class="hljs-number">4</span>) &lt;&lt; <span class="hljs-string">&quot;89 &gt; 4&quot;</span>;<br><br>    <span class="hljs-comment">//不常见用法5：频率输出，本质上是通过google::COUNTER这个计数机实现的</span><br>    <span class="hljs-built_in">LOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;Found &quot;</span> &lt;&lt; google::COUNTER &lt;&lt;std::endl;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">4</span>; i++)<br>    &#123;<br>        <span class="hljs-built_in">LOG_EVERY_N</span>(ERROR, <span class="hljs-number">5</span>) &lt;&lt; <span class="hljs-string">&quot;每隔5次输出一次 &quot;</span> &lt;&lt; i;<br>        <span class="hljs-built_in">LOG_FIRST_N</span>(ERROR, <span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-string">&quot;前两次输出 &quot;</span> &lt;&lt; i;<br>        <span class="hljs-built_in">LOG_IF_EVERY_N</span>(WARNING, <span class="hljs-number">1</span> &lt; <span class="hljs-number">2</span>, <span class="hljs-number">2</span>) &lt;&lt; <span class="hljs-string">&quot;条件输出+频率&quot;</span> &lt;&lt; google::COUNTER;<br>    &#125;<br><br>    google::<span class="hljs-built_in">ShutdownGoogleLogging</span>();  <span class="hljs-comment">//关闭log服务</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="glog使用封装"><a class="markdownIt-Anchor" href="#glog使用封装">#</a> glog 使用封装</h3>
+<p><code>kukaGlog.h</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;glog/logging.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;glog/raw_logging.h&gt;</span></span><br><br><span class="hljs-comment">//将信息输出到单独的文件和 LOG(ERROR)</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">SignalHandle</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* data, <span class="hljs-type">int</span> size)</span></span>;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">kukaGlog</span><br>&#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-comment">//GLOG配置：</span><br>    <span class="hljs-built_in">kukaGlog</span>(<span class="hljs-type">char</span>* program);<br>    <span class="hljs-comment">//GLOG内存清理：</span><br>    ~<span class="hljs-built_in">kukaGlog</span>();<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p><code>kukaGlog.cpp</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;kukaGlog.h&quot;</span></span><br> <br><span class="hljs-comment">//配置输出日志的目录：</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LOGDIR <span class="hljs-string">&quot;log&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> INFO_DIR <span class="hljs-string">&quot;/info/&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> WARN_DIR <span class="hljs-string">&quot;/warn/&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ERROR_DIR <span class="hljs-string">&quot;/error/&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FATAL_DIR <span class="hljs-string">&quot;/fatal/&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MKDIR <span class="hljs-string">&quot;mkdir -p &quot;</span> LOGDIR INFO_DIR <span class="hljs-string">&quot;&amp;&amp;&quot;</span> <span class="hljs-string">&quot;mkdir -p &quot;</span> LOGDIR  WARN_DIR <span class="hljs-string">&quot;&amp;&amp;&quot;</span> <span class="hljs-string">&quot;mkdir -p &quot;</span> LOGDIR  ERROR_DIR  <span class="hljs-string">&quot;&amp;&amp;&quot;</span> <span class="hljs-string">&quot;mkdir -p &quot;</span> LOGDIR  FATAL_DIR </span><br><br> <br><span class="hljs-comment">//将信息输出到单独的文件和 LOG(ERROR)</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">SignalHandle</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* data, <span class="hljs-type">int</span> size)</span></span><br><span class="hljs-function"></span>&#123;<br>    std::string str = std::<span class="hljs-built_in">string</span>(data,size);<br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    std::ofstream fs(&quot;glog_dump.log&quot;,std::ios::app);</span><br><span class="hljs-comment">    fs&lt;&lt;str;</span><br><span class="hljs-comment">    fs.close();</span><br><span class="hljs-comment">    */</span><br>    <span class="hljs-built_in">LOG</span>(ERROR)&lt;&lt;str;<br>    <span class="hljs-comment">//也可以直接在这里发送邮件或短信通知，不过这个方法是被回调多次的（每次回调只输出一行错误信息，所以如上面的记录到文件，也需要&gt;以追加模式方可），所以这里发邮件或短信不是很适合，不过倒是可以调用一个 SHELL 或 PYTHON 脚本，而此脚本会先 sleep 3秒左右，然后将错误信息通过邮件或短信发送出去，这样就不需要监控脚本定时高频率执行，浪费效率了。</span><br>&#125;<br> <br><span class="hljs-comment">//GLOG配置：</span><br>kukaGlog::<span class="hljs-built_in">kukaGlog</span>(<span class="hljs-type">char</span>* program)<br>&#123;<br>    <span class="hljs-built_in">system</span>(MKDIR);   <span class="hljs-comment">//</span><br>    google::<span class="hljs-built_in">InitGoogleLogging</span>(program);<br> <br>    google::<span class="hljs-built_in">SetStderrLogging</span>(google::INFO); <span class="hljs-comment">//设置级别高于 google::INFO 的日志同时输出到屏幕</span><br>    FLAGS_colorlogtostderr=<span class="hljs-literal">true</span>;    <span class="hljs-comment">//设置输出到屏幕的日志显示相应颜色</span><br>    <span class="hljs-comment">//google::SetLogDestination(google::ERROR,&quot;log/error_&quot;);    //设置 google::ERROR 级别的日志存储路径和文件名前缀</span><br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::INFO,LOGDIR INFO_DIR); <span class="hljs-comment">//设置 google::INFO 级别的日志存储路径和文件名前缀</span><br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::WARNING,LOGDIR WARN_DIR);   <span class="hljs-comment">//设置 google::WARNING 级别的日志存储路径和文件名前缀</span><br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::ERROR,LOGDIR ERROR_DIR);   <span class="hljs-comment">//设置 google::ERROR 级别的日志存储路径和文件名前缀</span><br>    google::<span class="hljs-built_in">SetLogDestination</span>(google::FATAL, LOGDIR FATAL_DIR);<br>    FLAGS_logbufsecs =<span class="hljs-number">0</span>;        <span class="hljs-comment">//缓冲日志输出，默认为30秒，此处改为立即输出</span><br>    FLAGS_max_log_size =<span class="hljs-number">100</span>;  <span class="hljs-comment">//最大日志大小为 100MB</span><br>    FLAGS_stop_logging_if_full_disk = <span class="hljs-literal">true</span>;     <span class="hljs-comment">//当磁盘被写满时，停止日志输出</span><br>    google::<span class="hljs-built_in">SetLogFilenameExtension</span>(<span class="hljs-string">&quot;kukalog_&quot;</span>);     <span class="hljs-comment">//设置文件名扩展，如平台？或其它需要区分的信息</span><br>    google::<span class="hljs-built_in">InstallFailureSignalHandler</span>();      <span class="hljs-comment">//捕捉 core dumped</span><br>    google::<span class="hljs-built_in">InstallFailureWriter</span>(&amp;SignalHandle);    <span class="hljs-comment">//默认捕捉 SIGSEGV 信号信息输出会输出到 stderr，可以通过下面的方法自定义输出&gt;方式：</span><br>&#125;<br><span class="hljs-comment">//GLOG内存清理：</span><br>kukaGlog::~<span class="hljs-built_in">kukaGlog</span>()<br>&#123;<br>    google::<span class="hljs-built_in">ShutdownGoogleLogging</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>test.cpp</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;kukaGlog.h&quot;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc,<span class="hljs-type">char</span>* argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//要使用 GLOG ，只需要在 main 函数开始处添加这句即可</span><br>    <span class="hljs-function">kukaGlog <span class="hljs-title">kukaglog</span><span class="hljs-params">(argv[<span class="hljs-number">0</span>])</span></span>;<br><br>    <span class="hljs-built_in">LOG</span>(INFO)&lt;&lt;<span class="hljs-string">&quot;INFO&quot;</span>;<br>    <span class="hljs-built_in">LOG</span>(ERROR)&lt;&lt;<span class="hljs-string">&quot;ERROR&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%B8%93%E4%B8%9A/" class="category-chain-item">专业</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%8A%80%E8%83%BD/">#技能</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>glog日记库</div>
+      <div>https://tanunatblog.kooldns.cn/2022/03/04/glog日记库/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Tanunat</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年3月4日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2022年9月10日</div>
+        </div>
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/15/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E6%80%BB%E7%BB%93/" title="论文阅读总结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文阅读总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.4.17/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"GMpvLJpvPBCIWgKUcZ6HjRgX-9Nh9j0Va","appKey":"VagepEp1nBZ6Tdf4UQj8aawh","path":"window.location.pathname","placeholder":"Welcome to leave a message!","avatar":"retro","meta":["nick","mail"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"https://gmpvljpv.lc-cn-e1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://tanunatblog.kooldns.cn/" target="_blank" rel="nofollow noopener"><span>I</span></a> <i class="iconfont icon-love"></i> <a href="https://tanunatblog.kooldns.cn/" target="_blank" rel="nofollow noopener"><span>the World</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

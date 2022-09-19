@@ -1,0 +1,728 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/tanunat.png">
+  <link rel="icon" href="/img/tanunat.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Tanunat">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="linux下的一些问题解决">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Nanopc-T4的hostapd问题">
+<meta property="og:url" content="https://tanunatblog.kooldns.cn/2022/09/15/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E5%85%B3%E4%BA%8ENanopc-T4%E7%9A%84hostapd%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Tanunat&#39;s Blog">
+<meta property="og:description" content="linux下的一些问题解决">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://tanunat-1313845263.cos.ap-guangzhou.myqcloud.com/pic/background-1900329_1920.jpg">
+<meta property="article:published_time" content="2022-09-15T07:20:00.000Z">
+<meta property="article:modified_time" content="2022-09-15T15:15:24.000Z">
+<meta property="article:author" content="Tanunat">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tanunat-1313845263.cos.ap-guangzhou.myqcloud.com/pic/background-1900329_1920.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>关于Nanopc-T4的hostapd问题 - Tanunat&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.15.6/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tanunatblog.kooldns.cn","root":"/","version":"1.9.2","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tanunat&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/photo/">
+                
+                photo
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://tanunat-1313845263.cos.ap-guangzhou.myqcloud.com/pic/background-1900329_1920.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.2)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="关于Nanopc-T4的hostapd问题"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Tanunat
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-15 15:20" pubdate>
+          2022年9月15日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">关于Nanopc-T4的hostapd问题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="问题如下"><a class="markdownIt-Anchor" href="#问题如下">#</a> 问题如下</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs sh">Job <span class="hljs-keyword">for</span> hostapd.service failed because the control process exited with error code.<br>See <span class="hljs-string">&quot;systemctl status hostapd.service&quot;</span> and <span class="hljs-string">&quot;journalctl -xe&quot;</span> <span class="hljs-keyword">for</span> details.<br>invoke-rc.d: initscript hostapd, action <span class="hljs-string">&quot;restart&quot;</span> failed.<br>● hostapd.service - Advanced IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/EAP Authenticator<br>   Loaded: loaded (/lib/systemd/system/hostapd.service; disabled; vendor preset: enabled)<br>   Active: failed (Result: exit-code) since Thu 2022-09-15 05:37:07 UTC; 19ms ago<br>  Process: 21473 ExecStart=/usr/sbin/hostapd -P /run/hostapd.pid -B <span class="hljs-variable">$DAEMON_OPTS</span> <span class="hljs-variable">$&#123;DAEMON_CONF&#125;</span> (code=exited, status=1/FAILURE)<br><br>Sep 15 05:37:07 NanoPC-T4 systemd[1]: Starting Advanced IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/EAP Authenticator...<br>Sep 15 05:37:07 NanoPC-T4 hostapd[21473]: Configuration file: /etc/hostapd/hostapd.conf<br>Sep 15 05:37:07 NanoPC-T4 hostapd[21473]: Line 14: invalid WPA passphrase length 3 (expected 8..63)<br>Sep 15 05:37:07 NanoPC-T4 hostapd[21473]: WPA-PSK enabled, but PSK or passphrase is not configured.<br>Sep 15 05:37:07 NanoPC-T4 hostapd[21473]: 2 errors found <span class="hljs-keyword">in</span> configuration file <span class="hljs-string">&#x27;/etc/hostapd/hostapd.conf&#x27;</span><br>Sep 15 05:37:07 NanoPC-T4 hostapd[21473]: Failed to <span class="hljs-built_in">set</span> up interface with /etc/hostapd/hostapd.conf<br>Sep 15 05:37:07 NanoPC-T4 hostapd[21473]: Failed to initialize interface<br>Sep 15 05:37:07 NanoPC-T4 systemd[1]: hostapd.service: Control process exited, code=exited status=1<br>Sep 15 05:37:07 NanoPC-T4 systemd[1]: hostapd.service: Failed with result <span class="hljs-string">&#x27;exit-code&#x27;</span>.<br>Sep 15 05:37:07 NanoPC-T4 systemd[1]: Failed to start Advanced IEEE 802.11 AP and IEEE 802.1X/WPA/WPA2/EAP Authenticator.<br>dpkg: error processing package hostapd (--configure):<br> installed hostapd package post-installation script subprocess returned error <span class="hljs-built_in">exit</span> status 1<br>Errors were encountered <span class="hljs-keyword">while</span> processing:<br> hostapd<br>E: Sub-process /usr/bin/dpkg returned an error code (1)<br></code></pre></td></tr></table></figure>
+<h3 id="问题分析"><a class="markdownIt-Anchor" href="#问题分析">#</a> 问题分析</h3>
+<h4 id="问题溯源"><a class="markdownIt-Anchor" href="#问题溯源">#</a> 问题溯源</h4>
+<p>刚看到这个问题的时候，还是比较懵的，仔细看了下应该是网卡相关的问题。一开始，显示的问题与上面有点不同，显示的是缺少 <code>/etc/hostapd/hostapd.conf</code>  文件，于是，我使用下面命令添加了 <code>hostapd.conf</code>  文件，并在网上随便找了些内容填了进去。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo <span class="hljs-built_in">touch</span> hostapd.conf<br></code></pre></td></tr></table></figure>
+<p>添加完后，就仍然报如上错误</p>
+<p>看了些博文，比如 https://blog.csdn.net/heroybc/article/details/100643458，其实也没解决问题，但问题明确了，该博主大概率也是通过 <code>sudo apt upgrade</code>  命令升级包的过程中，导致了该问题的出现。并且出现该问题了，你将无法使用 <code>sudo apt-get install</code>  命令安装任何东西，这是比较致命的，是必须解决的问题，不然只能重装系统。</p>
+<p>总的问题现象是：</p>
+<ul>
+<li>缺少 <code>hostapd.conf</code></li>
+<li><code>hostapd.conf</code>  内容填写不对</li>
+<li><code>hostapd.conf</code>  中的内容感觉是与 wifi 或者热点配置相关的东西</li>
+<li>然后我的 nanopc 机器仍然能够正常联网，只是在使用 <code>sudo apt-get install</code>  命令的时候，会报上面的错误。</li>
+</ul>
+<h4 id="怀疑是时间问题"><a class="markdownIt-Anchor" href="#怀疑是时间问题">#</a> 怀疑是时间问题</h4>
+<p><code>如没有时间相关问题的，可以先跳过这一节</code></p>
+<p>发现 <code>Active: failed (Result: exit-code) since Thu 2022-09-15 05:37:07 UTC; 19ms ago</code>  现实的时间和我本地的时间不一致，对于网络这块，时间不一致将导致很多问题的发生，虽然这不是根本原因，但也先解决了。解决如下：</p>
+<h5 id="1-查看时区"><a class="markdownIt-Anchor" href="#1-查看时区">#</a> 1. 查看时区</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ <span class="hljs-built_in">date</span> -R<br></code></pre></td></tr></table></figure>
+<h5 id="2-选择区域亚洲"><a class="markdownIt-Anchor" href="#2-选择区域亚洲">#</a> 2. 选择区域：亚洲</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sh">$ sudo tzselect<br>[sudo] password <span class="hljs-keyword">for</span> swfsadmin: <br>Sorry, try again.<br>[sudo] password <span class="hljs-keyword">for</span> swfsadmin: <br>Please identify a location so that time zone rules can be <span class="hljs-built_in">set</span> correctly.<br>Please select a continent or ocean.<br> 1) Africa<br> 2) Americas<br> 3) Antarctica<br> 4) Arctic Ocean<br> 5) Asia<br> 6) Atlantic Ocean<br> 7) Australia<br> 8) Europe<br> 9) Indian Ocean<br>10) Pacific Ocean<br>11) none - I want to specify the time zone using the Posix TZ format.<br><span class="hljs-comment">#? 5</span><br></code></pre></td></tr></table></figure>
+<h5 id="3-选择国家中国"><a class="markdownIt-Anchor" href="#3-选择国家中国">#</a> 3. 选择国家：中国</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs sh">Please select a country.<br> 1) Afghanistan           18) Israel                35) Palestine<br> 2) Armenia               19) Japan                 36) Philippines<br> 3) Azerbaijan            20) Jordan                37) Qatar<br> 4) Bahrain               21) Kazakhstan            38) Russia<br> 5) Bangladesh            22) Korea (North)         39) Saudi Arabia<br> 6) Bhutan                23) Korea (South)         40) Singapore<br> 7) Brunei                24) Kuwait                41) Sri Lanka<br> 8) Cambodia              25) Kyrgyzstan            42) Syria<br> 9) China                 26) Laos                  43) Taiwan<br>10) Cyprus                27) Lebanon               44) Tajikistan<br>11) East Timor            28) Macau                 45) Thailand<br>12) Georgia               29) Malaysia              46) Turkmenistan<br>13) Hong Kong             30) Mongolia              47) United Arab Emirates<br>14) India                 31) Myanmar (Burma)       48) Uzbekistan<br>15) Indonesia             32) Nepal                 49) Vietnam<br>16) Iran                  33) Oman                  50) Yemen<br>17) Iraq                  34) Pakistan<br><span class="hljs-comment">#? 9</span><br></code></pre></td></tr></table></figure>
+<h5 id="4-选择北京时间"><a class="markdownIt-Anchor" href="#4-选择北京时间">#</a> 4. 选择北京时间</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">Please select one of the following time zone regions.<br>1) east China - Beijing, Guangdong, Shanghai, etc.<br>2) Heilongjiang (except Mohe), Jilin<br>3) central China - Sichuan, Yunnan, Guangxi, Shaanxi, Guizhou, etc.<br>4) most of Tibet &amp; Xinjiang<br>5) west Tibet &amp; Xinjiang<br><span class="hljs-comment">#? 1</span><br></code></pre></td></tr></table></figure>
+<h5 id="5-确认验证"><a class="markdownIt-Anchor" href="#5-确认验证">#</a> 5. 确认验证</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs sh">The following information has been given:<br><br>        China<br>        east China - Beijing, Guangdong, Shanghai, etc.<br><br>Therefore TZ=<span class="hljs-string">&#x27;Asia/Shanghai&#x27;</span> will be used.<br>Local time is now:      Tue Dec 17 18:22:10 CST 2013.<br>Universal Time is now:  Tue Dec 17 10:22:10 UTC 2013.<br>Is the above information OK?<br>1) Yes<br>2) No<br><span class="hljs-comment">#? 1</span><br><br>You can make this change permanent <span class="hljs-keyword">for</span> yourself by appending the line<br>        TZ=<span class="hljs-string">&#x27;Asia/Shanghai&#x27;</span>; <span class="hljs-built_in">export</span> TZ<br>to the file <span class="hljs-string">&#x27;.profile&#x27;</span> <span class="hljs-keyword">in</span> your home directory; <span class="hljs-keyword">then</span> <span class="hljs-built_in">log</span> out and <span class="hljs-built_in">log</span> <span class="hljs-keyword">in</span> again.<br><br>Here is that TZ value again, this time on standard output so that you<br>can use the /usr/bin/tzselect <span class="hljs-built_in">command</span> <span class="hljs-keyword">in</span> shell scripts:<br>Asia/Shanghai<br></code></pre></td></tr></table></figure>
+<h5 id="6-复制文件到etc目录下"><a class="markdownIt-Anchor" href="#6-复制文件到etc目录下">#</a> 6. 复制文件到 /etc 目录下</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo <span class="hljs-built_in">cp</span> /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime<br></code></pre></td></tr></table></figure>
+<h5 id="7-更新时间"><a class="markdownIt-Anchor" href="#7-更新时间">#</a> 7. 更新时间</h5>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sudo ntpdate time.windows.com<br></code></pre></td></tr></table></figure>
+<p>更新完时间后，上面的错误仍然存在。</p>
+<h4 id="问题解决"><a class="markdownIt-Anchor" href="#问题解决">#</a> 问题解决</h4>
+<p>现在聚焦于问题中的 <code>2 errors found in configuration file '/etc/hostapd/hostapd.conf'</code>  这条内容，虽然创建了 <code>hostapd.conf</code> ，但是问题并没有解决。我需要了解 <code>hostapd.conf</code>  的作用，并填对对应的内容（当然，我目前还没读懂，只知道大概 hostapd 是与网卡访问节点相关的）。在联系到我的 NanoPC 其实和树莓派之类的相识，都是属于 “pi” 一类型的，因此，我搜索问题聚焦于 “PI” 相关的内容上，并在下面博文中找到了与树莓派相关的 <code>hostapd.conf</code>  配置</p>
+<p><a target="_blank" rel="noopener" href="https://hawksites.newpaltz.edu/myerse/2018/06/08/hostapd-on-raspberry-pi/comment-page-1/">https://hawksites.newpaltz.edu/myerse/2018/06/08/hostapd-on-raspberry-pi/comment-page-1/</a></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">interface</span>=<span class="hljs-symbol">wlan1</span><br>#<span class="hljs-symbol">If</span> <span class="hljs-symbol">this</span> <span class="hljs-symbol">fails</span>, <span class="hljs-symbol">try</span> <span class="hljs-symbol">rt1871xdrv</span> <span class="hljs-symbol">a</span> <br><span class="hljs-symbol">driver</span>=<span class="hljs-symbol">nl80211</span><br># <span class="hljs-symbol">Name</span> <span class="hljs-symbol">of</span> <span class="hljs-symbol">the</span> <span class="hljs-symbol">new</span> <span class="hljs-symbol">network</span>: <span class="hljs-symbol">best</span> <span class="hljs-symbol">use</span> <span class="hljs-symbol">the</span> <span class="hljs-symbol">hostname</span><br><span class="hljs-symbol">ssid</span>=<span class="hljs-symbol">wifipi</span><br><br># <span class="hljs-symbol">Pick</span> <span class="hljs-symbol">a</span> <span class="hljs-symbol">channel</span> <span class="hljs-symbol">not</span> <span class="hljs-symbol">already</span> <span class="hljs-symbol">in</span> <span class="hljs-symbol">use</span><br><span class="hljs-symbol">channel</span>=<span class="hljs-symbol">6</span><br># <span class="hljs-symbol">Change</span> <span class="hljs-symbol">to</span> <span class="hljs-symbol">b</span> <span class="hljs-symbol">for</span> <span class="hljs-symbol">older</span> <span class="hljs-symbol">devices</span>?<br><span class="hljs-symbol">hw_mode</span>=<span class="hljs-symbol">g</span><br><span class="hljs-symbol">macaddr_acl</span>=<span class="hljs-symbol">0</span><br><span class="hljs-symbol">auth_algs</span>=<span class="hljs-symbol">3</span><br># <span class="hljs-symbol">Disable</span> <span class="hljs-symbol">this</span> <span class="hljs-symbol">to</span> <span class="hljs-symbol">insure</span> <span class="hljs-symbol">the</span> <span class="hljs-symbol">AP</span> <span class="hljs-symbol">is</span> <span class="hljs-symbol">visible</span>:<br><span class="hljs-symbol">ignore_broadcast_ssid</span>=<span class="hljs-symbol">0</span><br></code></pre></td></tr></table></figure>
+<p>一开始复制过去的时候，我把 <code>interface=wlan1</code>  改成 <code>interface=wlan0</code> ，因为我觉得我无线网卡主要是 <code>wlan0</code> ，然而设置后，发现，我的 nanopc 不能联网了，于是只能改回来，正好通过 <code>ifconfig</code>  发现 <code>wlan1</code>  也是存在的。改好后，重新使用 <code>sudo apt-get install</code>  去安装一些东西，发现能够成功了，没产生其他问题。</p>
+<h4 id="后文"><a class="markdownIt-Anchor" href="#后文">#</a> 后文</h4>
+<p>在这篇博文中，<a target="_blank" rel="noopener" href="https://hawksites.newpaltz.edu/myerse/2018/06/08/hostapd-on-raspberry-pi/comment-page-1/%EF%BC%8C%E5%8F%91%E7%8E%B0%E4%BC%BC%E4%B9%8E%E5%8F%AF%E4%BB%A5%E7%94%A8">https://hawksites.newpaltz.edu/myerse/2018/06/08/hostapd-on-raspberry-pi/comment-page-1/，发现似乎可以用</a> <code>systemctl</code>  来停止 <code>hostapd</code>  的开机启动。但想想还是算了，因为我注意到在使用 <code>sudo apt-get install</code>  去安装东西的时候，会自动调用 <code>hostapd</code> ，当然想折腾的，可以往这方面去折腾一下。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/" class="category-chain-item">技术博文</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>关于Nanopc-T4的hostapd问题</div>
+      <div>https://tanunatblog.kooldns.cn/2022/09/15/技术博文/关于Nanopc-T4的hostapd问题/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Tanunat</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2022年9月15日</div>
+        </div>
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/15/%E6%96%B0%E9%97%BB%E7%BA%AA%E8%A6%81/" title="新闻纪要">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">新闻纪要</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/04/test/" title="test">
+                        <span class="hidden-mobile">test</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.4.17/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"GMpvLJpvPBCIWgKUcZ6HjRgX-9Nh9j0Va","appKey":"VagepEp1nBZ6Tdf4UQj8aawh","path":"window.location.pathname","placeholder":"Welcome to leave a message!","avatar":"retro","meta":["nick","mail"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"https://gmpvljpv.lc-cn-e1-shared.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://tanunatblog.kooldns.cn/" target="_blank" rel="nofollow noopener"><span>I</span></a> <i class="iconfont icon-love"></i> <a href="https://tanunatblog.kooldns.cn/" target="_blank" rel="nofollow noopener"><span>the World</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
